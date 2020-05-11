@@ -1,0 +1,176 @@
+<?xml version="1.0" ?>
+
+<robot name="phantom" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Se incluye el archivo con los links y uniones predefinidas en el archivo links_joints.xacro-->
+  <xacro:include filename="$(find phantom_urdf)/urdf/links_joints.xacro" />
+
+
+
+  
+  
+  <pincher_base name="base_link"/> <!-- Se inserta la base del robot -->
+
+
+   <!--Union fija de la base con m1-->
+  <j name="j0" type="fixed" origin_xyz="0 0 0.057" origin_rpy="1.570795 0 1.570795"   
+     parent="base_link"  child="m1" axis_xyz="0 0 0" lower="0" upper="0"/>
+
+  <!--Ubicacion m1-->
+  <motor name="m1" xyz="0 0.0205 0" rpy="0 0 0" /> <!--Motor que aplicara rotacion sobre el eje Z-->
+
+  <!--Vinculo rotacional sobre el eje Z, primer grado de liberta-->
+  <j name="j1" type="revolute" origin_xyz="0 0.035 0" origin_rpy="-1.570795 1.570795 3.14159"  
+     parent="m1"  child="f3_1" axis_xyz="0 0 -1" lower="-3.14" upper="3.14"/>
+
+  <!-- Ubicacion de la pieza de union de los motores F3-->
+  <F3 name="f3_1"  rpy="0 0 0" xyz="0 0 -0.0045"/><!--arm_shoulder_lift_servo_joint-->
+
+  <!--Union Fija que une al motor 2 a la pieza F3-->
+  <j name="j2" type="fixed" origin_xyz="0 0 -0.0205" origin_rpy="0 3.14159 0"  
+     parent="f3_1"  child="m2" axis_xyz="0 0 0" lower="0" upper="0"/>
+
+  <motor name="m2" rpy="0 0 0" xyz="0 0 0.025" /> <!--Motor que aplicara una rotacion sobre el eje Y-->
+
+  <!--Union rotacional sobre el eje Y, segundo grado de libertad-->
+  <j name="j3" type="revolute" origin_xyz="0 0 0.025" origin_rpy="0 1.570795 0"  
+     parent="m2"  child="f4_1" axis_xyz="0 -1 0" lower="-3.14" upper="3.14"/>
+
+  <!--Eslabon que une m2 con m3-->
+  <F4 name="f4_1" xyz="0 0 0.0" rpy="0 0 0"/><!--arm_shoulder_lift_link-->
+
+  <!--Vinculo fijo, union eslabon 1 con pieza F10-->
+  <j name="j4" type="fixed" origin_xyz="0 0 0.052" origin_rpy="0 0 0"  
+     parent="f4_1"  child="f10_1" axis_xyz="0 0 0" lower="0" upper="0"/>
+
+  <!-- Se usaran 4 epaciadores con uniones fijas para completar el eslabon 1-->
+  <F10 name="f10_1"  rpy="0 0 0" xyz="0 0 0.002"/>
+  <j name="j5" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 0 0"  
+     parent="f10_1"  child="f10_2" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F10 name="f10_2"  rpy="0 0 0" xyz="0 0 0.002"/>
+  <j name="j6" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 0 0"  
+     parent="f10_2"  child="f10_3" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F10 name="f10_3"  rpy="0 0 0" xyz="0 0 0.002"/>
+  <j name="j7" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 0 0"  
+     parent="f10_3"  child="f10_4" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F10 name="f10_4"  rpy="0 0 0" xyz="0 0 0.002"/>
+
+  <!-- Union F3 para fijar el eslabon al motor 3-->
+  <j name="j8" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 3.14 0"  
+     parent="f10_4"  child="f3_2" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F3 name="f3_2"  rpy="0 0 0" xyz="0 0 0"/>
+  <j name="j9" type="fixed" origin_xyz="0 0 -0.0165" origin_rpy="0 3.14159 0"  
+     parent="f3_2"  child="m3" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <motor name="m3" rpy="0 0 0" xyz="0 0 0.025" /> <!--Motor que aplicara una rotacion sobre el eje Y-->
+
+  <!--Union rotacional sobre el eje Y, tercer grado de libertad-->
+  <j name="j10" type="revolute" origin_xyz="0 0 0.025" origin_rpy="0 0 0"  
+     parent="m3"  child="f4_2" axis_xyz="0 -1 0" lower="-3.14" upper="3.14"/>
+  <F4 name="f4_2" xyz="0 0 0" rpy="0 0 0"/>
+  <j name="j11" type="fixed" origin_xyz="0 0 0.052" origin_rpy="0 0 0"  
+     parent="f4_2"  child="f10_5" axis_xyz="0 0 0" lower="0" upper="0"/>
+
+  <!-- Se usaran 4 epaciadores con uniones fijas para completar el eslabon 1-->
+  <F10 name="f10_5"  rpy="0 0 0" xyz="0 0 0.002"/>
+  <j name="j12" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 0 0"  
+     parent="f10_5"  child="f10_6" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F10 name="f10_6"  rpy="0 0 0" xyz="0 0 0.002"/>
+  <j name="j13" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 0 0"  
+     parent="f10_6"  child="f10_7" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F10 name="f10_7"  rpy="0 0 0" xyz="0 0 0.002"/>
+  <j name="j14" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 0 0"  
+     parent="f10_7"  child="f10_8" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F10 name="f10_8"  rpy="0 0 0" xyz="0 0 0.002"/>
+
+  <!-- Union F3 para fijar el eslabon al motor 3-->
+  <j name="j15" type="fixed" origin_xyz="0 0 0.004" origin_rpy="0 3.14 0"  
+     parent="f10_8"  child="f3_3" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F3 name="f3_3"  rpy="0 0 0" xyz="0 0 0"/>
+  <j name="j16" type="fixed" origin_xyz="0 0 -0.0165" origin_rpy="0 3.14159 0"  
+     parent="f3_3"  child="m4" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <motor name="m4" rpy="0 0 0" xyz="0 0 0.025" /> 
+
+  <!-- Eslabon del griper-->
+  <j name="j17" type="revolute" origin_xyz="0 0 0.025" origin_rpy="0 0 0"  
+     parent="m4"  child="f2_1" axis_xyz="0 -1 0" lower="-3.14" upper="3.14"/>
+  <F2 name="f2_1" xyz="0 0 0" rpy="0 0 0"/>
+  
+  <!-- Union F3 para fijar el eslabon al motor 3-->
+  <j name="j18" type="fixed" origin_xyz="0 0 0.0215" origin_rpy="0 3.14 -3.14"  
+     parent="f2_1"  child="f3_4" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <F3 name="f3_4"  rpy="0 0 0" xyz="0 0 -0.0045"/>
+  <j name="j19" type="fixed" origin_xyz="0 0 -0.0045" origin_rpy="1.570795 3.14159 1.570795"  
+     parent="f3_4"  child="m5" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <motor name="m5" rpy="0 0 0" xyz="0 0.022 0" />
+
+  <!--Base del efector final-->
+  <j name="j20" type="fixed" origin_xyz="0 0.041 0" origin_rpy="1.570795 -3.14159 1.570795"  
+     parent="m5"  child="base" axis_xyz="0 0 0" lower="0" upper="0"/>
+  <EF name="base" rpy="3.14159 -1.570795 1.570795" xyz="-0.001 0 0"/>
+
+  <!-- Gripper del efector final-->
+  <j name="j21" type="prismatic" origin_xyz="0 0.002 0" origin_rpy="0 0 0"  
+     parent="base"  child="gripper_1" axis_xyz="0 0 1" lower="0.002" upper="0.031"/>
+  <gripper name="gripper_1" xyz="-0.002 0 -0.003" rpy="0 -1.57 0"/>
+  <j name="j22" type="prismatic" origin_xyz="0 0.002 0" origin_rpy="0 0 0"  
+     parent="base"  child="gripper_2" axis_xyz="0 0 1" lower="0.002" upper="0.031"/>
+  <gripper name="gripper_2" xyz="-0.002 0 -0.03" rpy="0 1.57 3.14"/>
+
+
+
+
+<!-- Formas SImples
+
+
+
+  <m_link_box name="base_link" origin_rpy="0 0 0" 
+	      origin_xyz="0 0 0" mass="1024" 
+	      ixx="170.667" ixy="0" ixz="0"
+	      iyy="170.667" iyz="0" izz="170.667" size="0.06 0.06 0.19"/>
+
+
+  <m_joint name="j1_1" type="revolute" axis_xyz="0 0 1" 
+	   origin_rpy="0 0 0" origin_xyz="0 0 0.095"  
+	   parent="base_link" child="link_01"/>
+
+  <m_link_cylinder name ="link_01" origin_rpy="0 0 0" 
+	  	   origin_xyz ="0 0 0.021" length="0.042"
+	           mass="57.906" ixx="12.679" ixy="0" ixz="0"
+	           iyy="12.679" iyz="0" izz="0.651"
+		   radius="0.015"/>
+
+  <m_joint name="j2_1" type="revolute" axis_xyz="0 1 0" 
+	   origin_rpy="0 0 0" origin_xyz="0 0 0.042" 
+	   parent="link_01" child="link_02"/>
+
+  <m_link_cylinder name ="link_02" origin_rpy="0 0 0" 
+	  	   origin_xyz ="0 0 0.0525" length="0.105"
+	           mass="57.906" ixx="12.679" ixy="0" ixz="0"
+	           iyy="12.679" iyz="0" izz="0.651"
+		   radius="0.015"/>
+
+  <m_joint name="j3_1" type="revolute" axis_xyz="0 1 0" 
+	   origin_rpy="0 0 0" origin_xyz="0 0 0.105" 
+	   parent="link_02" child="link_03"/>
+  
+  <m_link_cylinder name ="link_03" origin_rpy="0 0 0" 
+	  	   origin_xyz ="0 0 0.0525" length="0.105"
+	           mass="57.906" ixx="12.679" ixy="0" ixz="0"
+	           iyy="12.679" iyz="0" izz="0.651"
+		   radius="0.015"/>
+
+  <m_joint name="j4_1" type="revolute" axis_xyz="0 1 0" 
+	   origin_rpy="0 0 0" origin_xyz="0 0 0.105" 
+	   parent="link_03" child="link_04"/>
+
+  <m_link_cylinder name ="link_04" origin_rpy="0 0 0" 
+	  	   origin_xyz ="0 0 0.055" length="0.11"
+	           mass="57.906" ixx="12.679" ixy="0" ixz="0"
+	           iyy="12.679" iyz="0" izz="0.651"
+		   radius="0.015"/>
+
+-->
+
+</robot>
+
+  

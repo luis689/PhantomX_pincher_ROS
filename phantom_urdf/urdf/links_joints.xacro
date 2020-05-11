@@ -1,0 +1,278 @@
+<?xml version="1.0"?>   
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <!-- Macro para las uniones-->
+  <xacro:macro name="j" params="name type axis_xyz origin_rpy origin_xyz parent child lower upper"><!--Parametros que recibe la macro-->
+    <joint name="${name}" type="${type}">  <!--TIpo y nombre de la union-->
+      <axis xyz="${axis_xyz}" />           <!-- Eje de funcionamiento-->
+      <limit effort="1000.0" lower="${lower}" upper="${upper}" velocity="0.5"/> <!--Limites del movimiento-->
+      <origin rpy="${origin_rpy}" xyz="${origin_xyz}" /> <!-- Coordenadas y orientacion-->
+      <parent link="${parent}" /> <!--Link anterior-->
+      <child link="${child}" />   <!-- LInk siguiente-->
+    </joint>
+  </xacro:macro>  
+
+  <!-- Macro para la base del robot-->
+  <xacro:macro name="pincher_base" params="name">  <!--Parametros que recibe la macro-->
+    <link name="${name}">
+      <inertial>    <!-- Propiedades de inercia-->
+        <mass value="0.055"/>   <!--Peso-->
+        <origin xyz="0 0 0.0285"/>          <!--Tensor-->
+        <inertia ixx="0.000017012" ixy="0.0" ixz="0.0"  
+                 iyy="0.000013258" iyz="0.0"
+                 izz="0.000009483"/>
+      </inertial>
+      <visual> <!--Parte visible-->
+        <origin xyz="0 0 0.0285" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/PincherBase.stl" scale="1.5 1.5 1.5"/><!--Ubicacion del archivo-->
+        </geometry>
+        <material name="Black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.0285" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/PincherBase.stl" scale="1.5 1.5 1.5"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+
+<!-- Macro del motor: Propiedades de la pieza y parametros modificables de ubicacion y rotacion -->
+  <xacro:macro name="motor" params="name xyz rpy">
+    <link name="${name}">
+      <inertial> <!--Propiedades de inercia-->
+        <mass value="0.055"/>
+        <origin xyz="${xyz}"/>
+        <inertia ixx="0.000017012" ixy="0.0" ixz="0.0" iyy="0.000013258" iyz="0.0" izz="0.000009483"/>
+      </inertial>
+      <visual> <!--Geometria que se muestra en el simulador con su ubicacion-->
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/ax12_box.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision> <!--Geometria de colision-->
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/ax12_box.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <!-- Macro del eslabon del efector final.-->
+  <xacro:macro name="F2" params="name xyz rpy">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.010"/>
+        <origin xyz="${xyz}"/>
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+      </inertial>
+      <visual>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F2.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+
+  <!-- Macro del fijador del motor-->
+  <xacro:macro name="F3" params="name rpy xyz">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.008"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+      </inertial>
+      <visual>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F3.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F3.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <gazebo reference="arm_shoulder_pan_link">
+      <material>Gazebo/Gray</material>
+      <selfCollide>true</selfCollide>
+      <gravity>true</gravity>
+    </gazebo>
+  </xacro:macro>
+
+
+  <!--Macro de los eslabones del cuerpo-->
+  <xacro:macro name="F4" params="name xyz rpy">
+    <link name="${name}"> 
+      <inertial>
+        <mass value="0.016"/>
+        <origin xyz="${xyz}"/>
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+      </inertial>
+      <visual>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F4.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F4.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+
+  <!--Macro del espaciador-->
+  <xacro:macro name="F10" params="name xyz rpy">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.004"/>
+        <origin xyz="${xyz}"/>
+        <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+      </inertial>
+      <visual>
+        <origin rpy="${rpy}" xyz="${xyz}" />
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F10.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/F10.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <!--Macro de la base del efector final-->
+  <xacro:macro name="EF" params="name xyz rpy">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.00001"/>
+        <origin xyz="${xyz}"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+      </inertial>
+      <visual>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/pincher_finger_base.stl" scale=".01 .01 .01"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/pincher_finger_base.stl" scale=".01 .01 .01"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <!--Macro dedos del gripper-->
+  <xacro:macro name="gripper" params="name xyz rpy">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.00001"/>
+        <origin xyz="${xyz}"/>
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+      </inertial>
+      <visual>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/pincher_finger.stl" scale=".01 .01 .01"/>
+        </geometry>
+        <material name="Gray"/>
+      </visual>
+      <collision>
+        <origin rpy="${rpy}" xyz="${xyz}"/>
+        <geometry>
+          <mesh filename="package://phantom_urdf/meshes/pincher_finger.stl" scale=".01 .01 .01"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+
+ 
+<!--   ROBOT CON FORMAS BASICAS
+
+  <xacro:macro name="m_joint" params="name type axis_xyz origin_rpy origin_xyz parent child">
+    <joint name="${name}" type="${type}">
+      <axis xyz="${axis_xyz}" />
+      <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.5"/>
+      <origin rpy="${origin_rpy}" xyz="${origin_xyz}" />
+      <parent link="${parent}" />
+      <child link="${child}" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="m_link_cylinder" params="name origin_xyz origin_rpy radius length mass ixx ixy ixz iyy iyz izz">
+    <link name="${name}">
+      <inertial>
+        <mass value="${mass}" />
+        <origin rpy="${origin_rpy}" xyz="${origin_xyz}"/>
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+      </inertial>
+      <collision>
+        <origin rpy="${origin_rpy}" xyz="${origin_xyz}" />
+        <geometry>
+	  <cylinder radius="${radius}" length="${length}" />
+        </geometry>
+      </collision>
+    <visual>
+      <origin rpy="${origin_rpy}" xyz="${origin_xyz}" />
+      <geometry>
+        <cylinder radius="${radius}" length="${length}" />
+      </geometry>
+    </visual>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="m_link_box" params="name origin_xyz origin_rpy size mass ixx ixy ixz iyy iyz izz">
+    <link name="${name}">
+      <inertial>
+        <mass value="${mass}" />
+        <origin rpy="${origin_rpy}" xyz="${origin_xyz}"/>
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+      </inertial>
+      <collision>
+        <origin rpy="${origin_rpy}" xyz="${origin_xyz}" />
+        <geometry>
+	  <box size="${size}"/>
+        </geometry>
+      </collision>
+    <visual>
+      <origin rpy="${origin_rpy}" xyz="${origin_xyz}" />
+      <geometry>
+        <box size="${size}" />
+      </geometry>
+    </visual>
+    </link>
+  </xacro:macro>
+
+-->   
+    
+</robot>
